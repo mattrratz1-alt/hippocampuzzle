@@ -30,7 +30,34 @@
         <div class="room-content">
           <h2>The Neurologist's Office</h2>
           <p class="room-desc">Patient records, brain structure diagrams, and symptom descriptions are scattered around. A locked drawer on the desk has a keypad.</p>
-          <div class="brain-scan-placeholder">[Brain scan image — affected area highlighted]</div>
+          <div class="brain-scan-figure" aria-label="Brain scan with affected area">
+            <svg class="brain-scan-svg" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#2d333b"/>
+                  <stop offset="100%" stop-color="#1c2128"/>
+                </linearGradient>
+                <linearGradient id="highlightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#7ee787"/>
+                  <stop offset="100%" stop-color="#3fb950"/>
+                </linearGradient>
+              </defs>
+              <!-- Head outline -->
+              <ellipse cx="100" cy="70" rx="58" ry="62" fill="none" stroke="#4a5568" stroke-width="1.5"/>
+              <!-- Brain outline (side view) -->
+              <path fill="url(#brainGrad)" stroke="#4a5568" stroke-width="1.2" d="M55 45 Q50 55 52 70 Q54 85 58 95 Q62 105 75 108 Q90 110 105 108 Q120 105 128 95 Q135 85 138 70 Q140 55 135 45 Q128 38 115 35 Q100 32 85 35 Q72 38 55 45 Z"/>
+              <!-- Hippocampus / affected region highlighted -->
+              <path fill="url(#highlightGrad)" fill-opacity="0.7" stroke="#7ee787" stroke-width="2" stroke-dasharray="4 2" d="M72 52 Q78 58 80 68 Q82 78 80 88 Q78 95 72 98 Q65 96 62 88 Q60 78 62 68 Q64 58 72 52 Z"/>
+              <text x="72" y="78" font-size="7" fill="#0d0f12" font-weight="bold" text-anchor="middle">H</text>
+              <!-- Scan lines effect -->
+              <line x1="45" y1="30" x2="155" y2="30" stroke="#2d333b" stroke-width="0.5" opacity="0.5"/>
+              <line x1="45" y1="50" x2="155" y2="50" stroke="#2d333b" stroke-width="0.5" opacity="0.5"/>
+              <line x1="45" y1="70" x2="155" y2="70" stroke="#2d333b" stroke-width="0.5" opacity="0.5"/>
+              <line x1="45" y1="90" x2="155" y2="90" stroke="#2d333b" stroke-width="0.5" opacity="0.5"/>
+              <line x1="45" y1="110" x2="155" y2="110" stroke="#2d333b" stroke-width="0.5" opacity="0.5"/>
+              <text x="100" y="128" font-size="10" fill="#8b949e" text-anchor="middle">Affected area highlighted — brain scan</text>
+            </svg>
+          </div>
           <div class="mcq-block">
             <p class="mcq-q">1. What part of the brain do you think is being impacted?</p>
             <label><input type="radio" name="q1" value="A"> A. Hippocampus</label>
@@ -66,7 +93,56 @@
         <div class="room-content">
           <h2>Corridor</h2>
           <p class="room-desc">A framed picture on the wall contains a jigsaw puzzle. Assemble the floor plan; use the transparent arrow card from the previous room to find the next code.</p>
-          <div class="puzzle-grid" id="floorPlanPuzzle"></div>
+          <div class="floor-plan-wrap">
+            <div class="floor-plan-frame" aria-label="Floor plan map">
+              <svg class="floor-plan-svg" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="gridPattern" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#2d333b" stroke-width="0.4"/>
+                  </pattern>
+                </defs>
+                <rect width="280" height="220" fill="#161a20"/>
+                <rect width="280" height="220" fill="url(#gridPattern)" opacity="0.4"/>
+                <!-- Corridor -->
+                <rect x="85" y="0" width="110" height="220" fill="none" stroke="#4a5568" stroke-width="2" stroke-dasharray="6 4"/>
+                <text x="140" y="15" fill="#8b949e" font-size="11" text-anchor="middle">CORRIDOR</text>
+                <!-- Landmarks -->
+                <text x="30" y="25" fill="#7ee787" font-size="9">↑ Start</text>
+                <text x="250" y="25" fill="#8b949e" font-size="9">Window</text>
+                <text x="30" y="200" fill="#8b949e" font-size="9">Stairs</text>
+                <text x="250" y="200" fill="#8b949e" font-size="9">Exit</text>
+                <!-- Rooms 3x3 grid (left side) -->
+                <rect x="10" y="35" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="42" y="62" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">1</text>
+                <rect x="10" y="90" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="42" y="117" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">2</text>
+                <rect x="10" y="145" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="42" y="172" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">3</text>
+                <rect x="80" y="35" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="112" y="62" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">4</text>
+                <rect x="80" y="90" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="112" y="117" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">5</text>
+                <rect x="80" y="145" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="112" y="172" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">6</text>
+                <!-- Right side rooms -->
+                <rect x="205" y="35" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="237" y="62" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">7</text>
+                <rect x="205" y="90" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="237" y="117" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">8</text>
+                <rect x="205" y="145" width="65" height="50" fill="#1c2128" stroke="#4a5568" stroke-width="1.5"/>
+                <text x="237" y="172" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">9</text>
+                <!-- Arrow card overlay: from Start (top-left), → → points to room 7 -->
+                <g class="arrow-card-overlay" opacity="0.9">
+                  <rect x="20" y="40" width="50" height="38" fill="none" stroke="#7ee787" stroke-width="2" stroke-dasharray="4 3"/>
+                  <text x="45" y="58" fill="#7ee787" font-size="11" text-anchor="middle">→</text>
+                  <text x="45" y="72" fill="#7ee787" font-size="11" text-anchor="middle">→</text>
+                  <text x="45" y="52" fill="#8b949e" font-size="7" text-anchor="middle">arrow card</text>
+                </g>
+              </svg>
+            </div>
+            <p class="floor-plan-caption">Floor plan: from Start (top-left), follow the arrow card → → to find the room number.</p>
+          </div>
+          <div class="puzzle-grid" id="floorPlanPuzzle" aria-hidden="true"></div>
           <p class="code-hint">Overlap the arrow card mentally: from the landmark at the top-left, follow the arrows. The room you reach gives the code (number on door).</p>
           <div class="keypad-row">
             <input type="text" id="room2Code" placeholder="Room code (e.g. 7)" maxlength="2">
