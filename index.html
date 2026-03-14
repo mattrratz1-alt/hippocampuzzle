@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hippocampuzzle — Escape the Memory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="game-header">
+      <h1>Hippocampuzzle</h1>
+      <p class="tagline">Escape the Memory</p>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="room-indicator">Room <span id="currentRoomNum">1</span> of 10</div>
+    </header>
+
+    <div id="hint-panel" class="hint-panel hidden">
+      <button class="hint-close" id="hintClose">×</button>
+      <h3>Hint</h3>
+      <p id="hintText"></p>
+    </div>
+
+    <main id="rooms">
+      <!-- ROOM 1: Neurologist Office -->
+      <section class="room" id="room1" data-room="1">
+        <div class="room-content">
+          <h2>The Neurologist's Office</h2>
+          <p class="room-desc">Patient records, brain structure diagrams, and symptom descriptions are scattered around. A locked drawer on the desk has a keypad.</p>
+          <div class="room-image-wrap">
+            <img src="images/room1-brain.png" alt="Brain scan with hippocampus region highlighted" class="room-image">
+          </div>
+          <div class="mcq-block">
+            <p class="mcq-q">1. What part of the brain do you think is being impacted?</p>
+            <label><input type="radio" name="q1" value="A"> A. Hippocampus</label>
+            <label><input type="radio" name="q1" value="B"> B. Cerebellum</label>
+            <label><input type="radio" name="q1" value="C"> C. Brainstem</label>
+            <label><input type="radio" name="q1" value="D"> D. Cerebrum</label>
+          </div>
+          <div class="mcq-block">
+            <p class="mcq-q">2. What is the hippocampus responsible for? <a href="https://qbi.uq.edu.au/memory/where-are-memories-stored" target="_blank" rel="noopener">(reference)</a></p>
+            <label><input type="radio" name="q2" value="A"> A. Permanent storage for general knowledge and facts</label>
+            <label><input type="radio" name="q2" value="B"> B. Region where episodic memories are formed and indexed</label>
+            <label><input type="radio" name="q2" value="C"> C. Structure that attaches emotional significance to memories</label>
+            <label><input type="radio" name="q2" value="D"> D. Primary area for motor memories</label>
+          </div>
+          <div class="mcq-block">
+            <p class="mcq-q">3. What are the main symptoms the patient is experiencing?</p>
+            <label><input type="radio" name="q3" value="A"> A. Forgetting childhood memories</label>
+            <label><input type="radio" name="q3" value="B"> B. Struggling to form new memories, feeling lost in familiar places, misplacing items</label>
+            <label><input type="radio" name="q3" value="C"> C. Losing sense of taste and smell</label>
+            <label><input type="radio" name="q3" value="D"> D. Difficulty with fine motor skills and muscle memory</label>
+          </div>
+          <p class="code-hint">The drawer keypad uses digits 1–4 (A=1, B=2, C=3, D=4). Enter the 3-digit code from your answers.</p>
+          <div class="keypad-row">
+            <input type="number" id="room1Code" min="1" max="4" maxlength="3" placeholder="___" inputmode="numeric" pattern="[1-4]*">
+            <button type="button" class="btn btn-primary" id="room1Submit">Open drawer</button>
+          </div>
+          <p id="room1Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 2: Corridor / Floor plan -->
+      <section class="room hidden" id="room2" data-room="2">
+        <div class="room-content">
+          <h2>Corridor</h2>
+          <p class="room-desc">A framed picture on the wall contains a jigsaw puzzle. Assemble the floor plan; use the transparent arrow card from the previous room to find the next code.</p>
+          <div class="room-image-wrap">
+            <img src="images/room2-floorplan.png" alt="Floor plan map with numbered rooms" class="room-image">
+          </div>
+          <p class="code-hint">From Start (top-left), follow the arrow card → → to find the room number. Enter that number as the code.</p>
+          <div class="puzzle-grid" id="floorPlanPuzzle" aria-hidden="true"></div>
+          <p class="code-hint">Overlap the arrow card mentally: from the landmark at the top-left, follow the arrows. The room you reach gives the code (number on door).</p>
+          <div class="keypad-row">
+            <input type="text" id="room2Code" placeholder="Room code (e.g. 7)" maxlength="2">
+            <button type="button" class="btn btn-primary" id="room2Submit">Try code</button>
+          </div>
+          <p id="room2Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 3: Living room - sequence + address -->
+      <section class="room hidden" id="room3" data-room="3">
+        <div class="room-content">
+          <h2>Living Room</h2>
+          <p class="room-desc">11:00 — daily memory practice. A sticky note says: "If you can't find your memory, look for clues."</p>
+          <div class="room-image-wrap">
+            <img src="images/room3-livingroom.png" alt="Living room with mirror, clock and sticky notes" class="room-image">
+          </div>
+          <div id="sequencePhase">
+            <p>Memorize the sequence of numbers, then enter it after they disappear.</p>
+            <div class="sequence-display" id="sequenceDisplay"></div>
+            <div class="sequence-input hidden" id="sequenceInputWrap">
+              <input type="text" id="sequenceInput" placeholder="Enter the sequence">
+              <button type="button" class="btn btn-primary" id="sequenceSubmit">Submit</button>
+            </div>
+            <button type="button" class="btn btn-secondary" id="startSequence">Start memory test</button>
+          </div>
+          <div id="addressPhase" class="hidden">
+            <p>Staff asked: "Do you remember where you lived?" Search the room for your address (e.g. on a license).</p>
+            <p class="code-hint">Enter the address in numbers and letters (e.g. 42 Oak St).</p>
+            <input type="text" id="addressInput" placeholder="Your address">
+            <button type="button" class="btn btn-primary" id="addressSubmit">Tell staff</button>
+          </div>
+          <p id="room3Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 4: Bedroom - misplaced items -->
+      <section class="room hidden" id="room4" data-room="4">
+        <div class="room-content">
+          <h2>Bedroom</h2>
+          <p class="room-desc">Find everyday objects in illogical locations. Click the misplaced item and then where it should be (or select the error).</p>
+          <div class="room-image-wrap">
+            <img src="images/room4-bedroom.png" alt="Bedroom with misplaced items" class="room-image">
+          </div>
+          <ul class="misplaced-list">
+            <li>Toothbrush — in the closet (should be bathroom)</li>
+            <li>Remote control — next to trash can (should be living room)</li>
+            <li>Shoes — on the bedside table (should be by door)</li>
+            <li>Glasses — under the pillow (should be on nightstand)</li>
+          </ul>
+          <p>Select all four errors, then the drawer will open. Check the box inside for the next clue.</p>
+          <div class="misplaced-checkboxes">
+            <label><input type="checkbox" name="misplaced" value="toothbrush"> Toothbrush in closet</label>
+            <label><input type="checkbox" name="misplaced" value="remote"> Remote by trash</label>
+            <label><input type="checkbox" name="misplaced" value="shoes"> Shoes on bedside table</label>
+            <label><input type="checkbox" name="misplaced" value="glasses"> Glasses under pillow</label>
+          </div>
+          <button type="button" class="btn btn-primary" id="room4Submit">Open drawer</button>
+          <p id="room4Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 5: Episodic vs Procedural -->
+      <section class="room hidden" id="room5" data-room="5">
+        <div class="room-content">
+          <h2>Memory Sort</h2>
+          <p class="room-desc">Sort items into <strong>Episodic</strong> (events at a specific time) or <strong>Procedural</strong> (skills/action sequences).</p>
+          <div class="room-image-wrap">
+            <img src="images/room5-memory-sort.png" alt="Episodic vs procedural memory diagram" class="room-image">
+          </div>
+          <div class="sort-areas">
+            <div class="sort-box episodic" data-type="episodic"><h4>Episodic</h4><div id="episodicDrop"></div></div>
+            <div class="sort-box procedural" data-type="procedural"><h4>Procedural</h4><div id="proceduralDrop"></div></div>
+          </div>
+          <div class="sort-cards" id="sortCards"></div>
+          <button type="button" class="btn btn-primary hidden" id="room5Submit">Confirm & get clue</button>
+          <p id="room5Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 6: Timeline -->
+      <section class="room hidden" id="room6" data-room="6">
+        <div class="room-content">
+          <h2>Physiotherapy Space</h2>
+          <p class="room-desc">You entered without remembering how. Put these events in the correct order of a typical day.</p>
+          <div class="room-image-wrap">
+            <img src="images/room6-physiotherapy.png" alt="Physiotherapy room" class="room-image">
+          </div>
+          <div class="timeline-game">
+            <div class="timeline-slots" id="timelineSlots"></div>
+            <div class="timeline-pool" id="timelinePool"></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="room6Submit">Check order</button>
+          <p id="room6Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 7: Associations -->
+      <section class="room hidden" id="room7" data-room="7">
+        <div class="room-content">
+          <h2>Cue Association</h2>
+          <p class="room-desc">Match each item with its corresponding cue. Correct associations reveal the next clue.</p>
+          <div class="room-image-wrap">
+            <img src="images/room7-cues.png" alt="Objects to match: record player, journal, book, flowers" class="room-image">
+          </div>
+          <div class="match-game" id="matchGame"></div>
+          <button type="button" class="btn btn-primary hidden" id="room7Submit">Unlock compartment</button>
+          <p id="room7Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 8: Object–location pairings -->
+      <section class="room hidden" id="room8" data-room="8">
+        <div class="room-content">
+          <h2>Updated Pairings</h2>
+          <p class="room-desc">Doctor's note: "Patient's environment reorganized to help with memory recall." Use the <strong>new</strong> pairings to find the code.</p>
+          <div class="room-image-wrap">
+            <img src="images/room8-pairings.png" alt="Room with drawer, red book, blue tray, cabinet, notebook" class="room-image">
+          </div>
+          <div class="pairings-instructions">
+            <p><strong>Original (old):</strong> Key→Under red book, Flashlight→Bedside drawer, Pill bottle→On blue tray, Pen→Inside notebook.</p>
+            <p><strong>New:</strong> Key→Inside drawer, Flashlight→Under red book, Pill bottle→Inside cabinet, Pen→On blue tray. Only the correct location has the code digit.</p>
+          </div>
+          <p>Click the location where the <strong>Key</strong> is now (new pairing).</p>
+          <div class="location-buttons" id="room8Locations"></div>
+          <p id="room8Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 9: Memory fragments -->
+      <section class="room hidden" id="room9" data-room="9">
+        <div class="room-content">
+          <h2>One Coherent Day</h2>
+          <p class="room-desc">Combine memory fragments into a single day: Morning, Afternoon, Evening, Night. Only one configuration unlocks the exit.</p>
+          <div class="room-image-wrap">
+            <img src="images/room9-fragments.png" alt="Table with photos, notes and objects to organize" class="room-image">
+          </div>
+          <div class="fragments-board" id="fragmentsBoard"></div>
+          <button type="button" class="btn btn-primary" id="room9Submit">Unlock exit</button>
+          <p id="room9Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- ROOM 10: Pattern separation -->
+      <section class="room hidden" id="room10" data-room="10">
+        <div class="room-content">
+          <h2>Final Lock</h2>
+          <p class="room-desc">Identify the exact configuration you saw earlier. Only one opens the final lock.</p>
+          <div class="room-image-wrap">
+            <img src="images/room10-patterns.png" alt="Similar symbol patterns to remember" class="room-image">
+          </div>
+          <div class="pattern-game" id="patternGame"></div>
+          <button type="button" class="btn btn-primary" id="room10Submit">Try configuration</button>
+          <p id="room10Feedback" class="feedback hidden"></p>
+        </div>
+      </section>
+
+      <!-- WIN -->
+      <section class="room hidden" id="roomWin">
+        <div class="room-content win-screen">
+          <h2>You escaped.</h2>
+          <p>You've experienced a glimpse of what it's like when the hippocampus is damaged — when forming new memories and navigating familiar space becomes a daily struggle. The brain's synaptic bridges can be supported by cues, routine, and care.</p>
+          <p><strong>Thank you for playing Hippocampuzzle.</strong></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="game-footer">
+      <button type="button" class="btn btn-ghost" id="hintBtn" title="Unlocks after 2 wrong attempts">Hint</button>
+    </footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
