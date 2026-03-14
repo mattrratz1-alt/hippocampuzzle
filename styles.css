@@ -136,15 +136,50 @@ body {
   margin-right: 0.5rem;
 }
 
-.brain-scan-placeholder {
-  background: var(--bg-elevated);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 2rem;
-  text-align: center;
-  color: var(--text-muted);
+.brain-scan-figure {
   margin-bottom: 1rem;
-  font-size: 0.9rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.brain-scan-svg {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.floor-plan-wrap {
+  margin-bottom: 1rem;
+}
+
+.floor-plan-frame {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  margin-bottom: 0.5rem;
+}
+
+.floor-plan-svg {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.floor-plan-caption {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+#room2 .puzzle-grid[aria-hidden="true"] {
+  display: none;
 }
 
 .code-hint {
